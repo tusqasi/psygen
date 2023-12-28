@@ -60,68 +60,68 @@ void update_objects(Object *objects, const Vector2 *forces,
 
     if (current_object->position.x >= WIDTH) {
       current_object->position.x = WIDTH;
-      current_object->velocity.x = -current_object->velocity.x;
+      current_object->velocity.x = -current_object->velocity.x * 0.8;
     }
     if (current_object->position.x <= 0) {
       current_object->position.x = 0;
-      current_object->velocity.x = -current_object->velocity.x;
+      current_object->velocity.x = -current_object->velocity.x * 0.8;
     }
     if (current_object->position.y <= 0) {
       current_object->position.y = 0;
-      current_object->velocity.y = -current_object->velocity.y;
+      current_object->velocity.y = -current_object->velocity.y * 0.8;
     }
     if (current_object->position.y >= WIDTH) {
       current_object->position.y = WIDTH;
-      current_object->velocity.y = -current_object->velocity.y;
+      current_object->velocity.y = -current_object->velocity.y * 0.8;
     }
     current_object->acceleration = Vector2Zero();
   }
 }
 
 int main(int argc, char *argv[]) {
-  const int n_objects = 3;
-  const double trig_size = 199;
+  const int n_objects = 4;
+  const double trig_size = 300;
+  const double trig_diagonal =
+      sqrt(trig_size * trig_size - (trig_size / 2) * (trig_size / 2));
   Object objects[] = {
-      (Object){
-          BLUE, {WIDTH / 2.0, HEIGHT / 2.0 - 120}, {0, 0}, {0, 0}, 250.0, 10},
-      (Object){GREEN,
-               {WIDTH / 2.0, HEIGHT / 2.0 + 100},
-               {.0, 0.0},
+      (Object){BLUE,
+               {WIDTH / 2.0, HEIGHT / 2.0 - trig_diagonal / 2},
+               {0, 0},
                {0, 0},
                250.0,
                10},
-      (Object){RED,
-               {WIDTH / 2.0 - trig_size / 2.0,
-                HEIGHT / 2.0 + sqrt(trig_size * trig_size -
-                                    (trig_size / 2) * (trig_size / 2)) /
-                                   2},
+      (Object){GREEN,
+               {WIDTH / 2.0 + trig_size / 2, HEIGHT / 2.0 + trig_diagonal / 2},
+               {.0, 0.0},
                {0, 0},
-               {0, 0},
-               25.0,
+               100,
                10},
-      // (Object){"",
-      //          {WIDTH / 2.0 +40 ,
-      //           HEIGHT / 2.0 + sqrt(trig_size * trig_size - (trig_size / 2) *
-      //           (trig_size / 2)) /
-      //                              2},
-      //          {0, 0},
-      //          {0, 0},
-      //          20.0,
-      //          10},
-      // (Object){"dark_matter",
-      //          {WIDTH / 2.0 - 200, HEIGHT / 2.0},
-      //          {0, 0},
-      //          {0, 0},
-      //          -100.0,
-      //          10},
+      (Object){RED,
+               {WIDTH / 2.0 - trig_size / 2, HEIGHT / 2.0 + trig_diagonal / 2},
+               {0, 0},
+               {0, 0},
+               100,
+               10},
+      (Object){WHITE,
+               {WIDTH / 2.0 +40 ,
+                HEIGHT / 2.0 + trig_size / 2},
+               {0, 0},
+               20.0,
+               10},
+      (Object){GRAY,
+               {WIDTH / 2.0 - 201, HEIGHT / 2.0},
+               {0, 0},
+               {0, 0},
+               -10.0,
+               40},
   };
 
   float orbital_velocity_force_mg =
       1 * sqrt(G * (objects[1].mass + objects[0].mass) /
                Vector2Distance(objects[0].position, objects[1].position));
 
-  // objects[1].velocity.x = -orbital_velocity_force_mg;
-  // objects[0].velocity.x = orbital_velocity_force_mg;
+  objects[1].velocity.x = -orbital_velocity_force_mg;
+  objects[0].velocity.x = +orbital_velocity_force_mg;
 
   SetTargetFPS(230);
   SetConfigFlags(FLAG_MSAA_4X_HINT);
